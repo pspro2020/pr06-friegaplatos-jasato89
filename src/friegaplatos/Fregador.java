@@ -1,6 +1,5 @@
 package friegaplatos;
 
-import java.sql.Time;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -16,29 +15,32 @@ public class Fregador implements Runnable {
 
     @Override
     public void run() {
-        Plato plato = null;
-        Random random = new Random();
+        Plato plato;
         while (!Thread.currentThread().isInterrupted()) {
+            try {
+                plato = cogerSucio();
+            } catch (InterruptedException e) {
+                return;
+            }
+            try {
+                limpiarPlato(plato);
+            } catch (InterruptedException e) {
+                return;
+            }
 
-            plato = cogerSucio();
         }
-            limpiarPlato(plato);
-        }
+    }
 
-    private Plato cogerSucio() {
+    private Plato cogerSucio() throws InterruptedException {
         return bandejaSucia.quitar();
     }
 
-    private void limpiarPlato(Plato plato) {
-            Random random = new Random();
-            try {
-                TimeUnit.SECONDS.sleep(random.nextInt(5) + 4);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            bandejaLimpia.añadir(plato);
-
-        }
+    private void limpiarPlato(Plato plato) throws InterruptedException {
+        Random random = new Random();
+        TimeUnit.SECONDS.sleep(random.nextInt(5) + 4);
+        bandejaLimpia.añadir(plato);
 
     }
+
+}
 

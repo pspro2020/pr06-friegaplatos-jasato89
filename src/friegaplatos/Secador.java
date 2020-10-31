@@ -17,21 +17,24 @@ public class Secador implements Runnable {
     public void run()  {
         Plato plato;
         while (!Thread.currentThread().isInterrupted()) {
-            plato = platosLimpios.quitar();
-            secarPlato(plato);
+            try {
+                plato = platosLimpios.quitar();
+            } catch (InterruptedException e) {
+                return;
+            }
+            try {
+                secarPlato(plato);
+            } catch (InterruptedException e) {
+                return;
+            }
 
         }
 
     }
 
-    private void secarPlato(Plato plato) {
+    private void secarPlato(Plato plato) throws InterruptedException {
         Random random = new Random();
-        try {
-            TimeUnit.SECONDS.sleep(random.nextInt(3)+1);
-        } catch (InterruptedException e) {
-            System.out.println("Error en el proceso de secado");
-            e.printStackTrace();
-        }
+        TimeUnit.SECONDS.sleep(random.nextInt(3)+1);
         platosSecos.añadir(plato);
     }
 }

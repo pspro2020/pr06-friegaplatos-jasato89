@@ -8,7 +8,7 @@ public class Plato {
         this.num = num;
     }
 
-    public Object getNum() {
+    public int getNum() {
         return num;
     }
 }

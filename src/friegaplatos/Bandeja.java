@@ -7,18 +7,17 @@ import java.util.List;
 
 public class Bandeja {
 
-    private List<Plato> bandejaPlatos;
-
+    private List<Plato> bandejaPlatos = new ArrayList<>();
 
     public Bandeja(List<Plato> bandejaPlatos) {
         this.bandejaPlatos = bandejaPlatos;
     }
-    public Bandeja() {};
+    public Bandeja() {}
 
     protected synchronized void añadir(Plato plato) {
 
             System.out.printf(
-                    "%s - %s  plato núm %d\n",
+                    "%s - %s plato núm %d\n",
                     LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")),
                     Thread.currentThread().getName(),
                     plato.getNum()
@@ -27,19 +26,15 @@ public class Bandeja {
             notifyAll();
 
     }
-    protected Plato quitar() {
-
+    protected Plato quitar() throws InterruptedException {
+        Plato plato = null;
         synchronized (this) {
-            try {
                 while (bandejaPlatos.isEmpty()) {
                     wait();
                 }
+                plato = bandejaPlatos.remove(0);
                 notifyAll();
-            } catch (InterruptedException e) {
-                System.out.println("Error fatal extrayendo platos");
-                e.printStackTrace();
-            }
-            return bandejaPlatos.remove(0);
+                return plato;
         }
     }
 }

@@ -16,20 +16,23 @@ public class Organizador implements Runnable{
     public void run() {
         Plato plato;
         while (!Thread.currentThread().isInterrupted()) {
-            plato = bandejaSecos.quitar();
-            guardarPlato(plato);
+            try {
+                plato = bandejaSecos.quitar();
+            } catch (InterruptedException e) {
+                return;
+            }
+            try {
+                guardarPlato(plato);
+            } catch (InterruptedException e) {
+                return;
+            }
         }
 
     }
 
-    private void guardarPlato(Plato plato) {
+    private void guardarPlato(Plato plato) throws InterruptedException {
         Random random = new Random();
-        try {
-            TimeUnit.SECONDS.sleep(random.nextInt(2)+1);
-        } catch (InterruptedException e) {
-            System.out.println("Error guardando plato");
-            e.printStackTrace();
-        }
+        TimeUnit.SECONDS.sleep(random.nextInt(2)+1);
         bandejaGuardar.añadir(plato);
     }
 }
